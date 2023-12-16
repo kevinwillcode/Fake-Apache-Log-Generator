@@ -1,0 +1,10 @@
+Detail logs : 
+IP Address: 142.23.16.114
+Waktu Akses: 16/Dec/2023:06:25:21 +0000
+Metode Akses: POST
+URL yang Diakses: /list
+Protokol HTTP: HTTP/1.0
+Kode Status: 200 (Artinya sukses)
+Ukuran Respons: 5095 bytes
+Referer: https://www.pratt.com/search/blogterms.php
+User Agent: Mozilla/5.0 (iPad; CPU iPad OS 7_1_2 like Mac OS X) AppleWebKit/531.0 (KHTML, like Gecko) FxiOS/12.4p1337.0 Mobile/38Q676 Safari/531.0
