@@ -17,7 +17,6 @@ local = get_localzone()
 # allow writing different patterns (Common Log, Apache Error log etc)
 # log rotation
 
-
 class switch(object):
     def __init__(self, value):
         self.value = value
@@ -38,7 +37,7 @@ class switch(object):
         else:
             return False
 
-parser = argparse.ArgumentParser(__file__, description="Fake Apache Log Generator")
+parser = argparse.ArgumentParser(__file__, description="Apache Log")
 parser.add_argument("--output", "-o", dest='output_type', help="Write to a Log file, a gzip file or to STDOUT", choices=['LOG','GZ','CONSOLE'] )
 parser.add_argument("--log-format", "-l", dest='log_format', help="Log format, Common or Extended Log Format ", choices=['CLF','ELF'], default="ELF" )
 parser.add_argument("--num", "-n", dest='num_lines', help="Number of lines to generate (0 for infinite)", type=int, default=1)
@@ -57,7 +56,7 @@ faker = Faker()
 timestr = time.strftime("%Y%m%d-%H%M%S")
 otime = datetime.datetime.now()
 
-outFileName = 'access_log_'+timestr+'.log' if not file_prefix else file_prefix+'_access_log_'+timestr+'.log'
+outFileName = 'result/'+'access_log_'+timestr+'.log' if not file_prefix else file_prefix+'_access_log_'+timestr+'.log'
 
 for case in switch(output_type):
     if case('LOG'):
@@ -70,11 +69,66 @@ for case in switch(output_type):
     if case():
         f = sys.stdout
 
-response=["200","404","500","301"]
+response=["200", "204", "401", "403", "400","404","500", "502", "503"]
 
 verb=["GET","POST","DELETE","PUT"]
 
-resources=["/list","/wp-content","/wp-admin","/explore","/search/tag/list","/app/main/posts","/posts/posts/explore","/apps/cart.jsp?appID="]
+resources = [
+    "/workspace/list",
+    "/workspace/import",
+    "/workspace/export",
+    "/workspace/mkdirs",
+    "/workspace/dbutils",
+    "/clusters/create",
+    "/clusters/get",
+    "/clusters/edit",
+    "/clusters/delete",
+    "/jobs/create",
+    "/jobs/get",
+    "/jobs/runs/list",
+    "/jobs/reset",
+    "/jobs/delete",
+    "/library/install",
+    "/library/uninstall",
+    "/library/list",
+    "/secrets/put",
+    "/secrets/get",
+    "/secrets/delete",
+    "/runs/submit",
+    "/runs/get",
+    "/runs/delete",
+    "/dbfs/read",
+    "/dbfs/write",
+    "/dbfs/list",
+    "/dbfs/delete",
+    "/workspace/acl",
+    "/experiment/create",
+    "/experiment/get",
+    "/experiment/edit",
+    "/experiment/delete",
+    "/mlflow/create",
+    "/mlflow/get",
+    "/mlflow/edit",
+    "/mlflow/delete",
+    "/token/create",
+    "/token/get",
+    "/token/list",
+    "/token/destroy",
+    "/audit/logs/read",
+    "/audit/configure",
+    "/instance-pools/create",
+    "/instance-pools/get",
+    "/instance-pools/edit",
+    "/instance-pools/delete",
+    "/groups/list",
+    "/groups/create",
+    "/groups/edit",
+    "/groups/delete",
+    "/preview/scim/v2/Users",
+    "/preview/scim/v2/Groups",
+    "/job/runs/get",
+    "/job/runs/cancel"
+]
 
 ualist = [faker.firefox, faker.chrome, faker.safari, faker.internet_explorer, faker.opera]
 
@@ -95,14 +149,16 @@ while (flag):
     if uri.find("apps")>0:
         uri += str(random.randint(1000,10000))
 
-    resp = numpy.random.choice(response,p=[0.9,0.04,0.02,0.04])
+    probabilities = [1.0 / len(response)] * len(response)
+    resp = numpy.random.choice(response, p=probabilities)   
     byt = int(random.gauss(5000,50))
-    referer = faker.uri()
+    # referer = faker.uri()
     useragent = numpy.random.choice(ualist,p=[0.5,0.3,0.1,0.05,0.05] )()
     if log_format == "CLF":
         f.write('%s - - [%s %s] "%s %s HTTP/1.0" %s %s\n' % (ip,dt,tz,vrb,uri,resp,byt))
     elif log_format == "ELF": 
-        f.write('%s - - [%s %s] "%s %s HTTP/1.0" %s %s "%s" "%s"\n' % (ip,dt,tz,vrb,uri,resp,byt,referer,useragent))
+        # f.write('%s - - [%s %s] "%s %s HTTP/1.0" %s %s "%s" "%s"\n' % (ip,dt,tz,vrb,uri,resp,byt,referer,useragent))
+        f.write('%s - - [%s %s] "%s %s HTTP/1.0" %s %s "%s"\n' % (ip,dt,tz,vrb,uri,resp,byt,useragent))
     f.flush()
 
     log_lines = log_lines - 1
