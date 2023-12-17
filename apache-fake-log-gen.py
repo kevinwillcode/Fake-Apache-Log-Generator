@@ -130,7 +130,7 @@ resources = [
     "/job/runs/cancel"
 ]
 
-ualist = [faker.firefox, faker.chrome, faker.safari, faker.internet_explorer, faker.opera]
+ualist = [faker.firefox, faker.chrome, faker.safari, faker.chrome, faker.opera]
 
 flag = True
 while (flag):
